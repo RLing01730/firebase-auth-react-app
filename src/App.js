@@ -56,14 +56,31 @@ function App() {
     }
   };
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:9000';
   const fetchProtectedData = async () => {
     try {
+      if (!auth.currentUser) {
+        console.error('Cannot fetch protected data: No authenticated user.');
+        return;
+      }
       const token = await auth.currentUser.getIdToken(); 
-      const response = await fetch('http://localhost:9000/protected', {
+      const response = await fetch(`${API_BASE_URL}/protected`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+      if (!response.ok) {
+        let errorMsg = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData?.message || errorMsg;
+        } catch (e) {
+          // Ignore JSON parse errors, use default errorMsg
+        }
+        setError(errorMsg);
+        console.error('Error fetching protected data:', errorMsg);
+        return;
+      }
       const data = await response.json();
       console.log(data);
 
@@ -110,8 +127,7 @@ function App() {
         }
 
         {
-            user &&
-            (
+            user && (
                 <>
                 <p>Welcome, {user.displayName}!</p>
                 
