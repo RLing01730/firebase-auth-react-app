@@ -1,5 +1,6 @@
 // src/setupTests.js
 // Runs before all tests in Create React App to mock Firebase SDK
+import '@testing-library/jest-dom';
 
 // Provide a constructor-compatible mock for GoogleAuthProvider
 class MockGoogleAuthProvider {
