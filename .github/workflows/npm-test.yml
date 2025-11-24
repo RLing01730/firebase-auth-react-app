@@ -6,6 +6,8 @@ jobs:
     strategy:
       matrix:
         node_version: [18.x]
+    env:
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js $
